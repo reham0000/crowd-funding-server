@@ -25,35 +25,80 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
-    const fundCollection = client.db('fundDB').collection('fund');
+    const fundCollection = client.db("fundDB").collection("fund");
 
+    const userCollection = client.db("fundDB").collection("users");
 
-    app.get('/fund', async(req, res) => {
-        const cursor = fundCollection.find().limit(6); 
-        const result = await cursor.toArray();
-        res.send(result);
-    })
+    const donationCollection = client.db("fundDB").collection("donation");
 
+    // db.orders.find().sort( { amount: -1 } )
 
-    app.get('/funds', async(req, res) => {
-        const cursor = fundCollection.find();
-        const result = await cursor.toArray();
-        res.send(result);
-    })
+    app.get("/fund", async (req, res) => {
+      const cursor = fundCollection.find().limit(6).sort({ minDonation: -1 });
+      const result = await cursor.toArray();
+      res.send(result);
+    });
 
-    app.get('/fund/:id', async(req, res) => {
-        const id = req.params.id;
-        const query = { _id: new ObjectId(id) }
-        const result = await fundCollection.findOne(query);
-        res.send(result);
-    })
+    app.get("/funds", async (req, res) => {
+      const cursor = fundCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
 
-    app.post('/fund', async(req, res) => {
-        const newFund = req.body;
-        console.log(newFund);
-        const result = await fundCollection.insertOne(newFund);
-        res.send(result);
-    })
+    app.get("/fund/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await fundCollection.findOne(query);
+      res.send(result);
+    });
+
+    app.post("/fund", async (req, res) => {
+      const newFund = req.body;
+      console.log(newFund);
+      const result = await fundCollection.insertOne(newFund);
+      res.send(result);
+    });
+
+    // users related apis
+
+    app.get("/users", async (req, res) => {
+      const cursor = userCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    app.post("/users", async (req, res) => {
+      const newUser = req.body;
+      console.log("creating new user", newUser);
+      const result = await userCollection.insertOne(newUser);
+      res.send(result);
+    });
+
+    // donation related apis
+
+    // app.get("/donation/:email", async (req, res) => {
+    //   const email = req.params.email;
+    //   console.log(email);
+    //   console.log("req",req.user?.user);
+      
+    //   const query = { email: email }
+    //   const result = await donationCollection.find(query).toArray()
+    //   res.send(result)
+    // });
+
+    app.get("/donation", async (req, res) => {
+      const cursor = donationCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    app.post("/donation", async (req, res) => {
+      const newDonation = req.body;
+      console.log("creating new donation", newDonation);
+      const result = await donationCollection.insertOne(newDonation);
+      res.send(result);
+    });
+    
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
