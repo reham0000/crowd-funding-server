@@ -31,6 +31,8 @@ async function run() {
 
     const donationCollection = client.db("fundDB").collection("donation");
 
+    const newCollection = client.db("fundDB").collection("add")
+
     // db.orders.find().sort( { amount: -1 } )
 
     app.get("/fund", async (req, res) => {
@@ -40,6 +42,12 @@ async function run() {
     });
 
     app.get("/funds", async (req, res) => {
+      const cursor = fundCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    app.get("/myfunds", async (req, res) => {
       const cursor = fundCollection.find();
       const result = await cursor.toArray();
       res.send(result);
@@ -76,16 +84,6 @@ async function run() {
 
     // donation related apis
 
-    // app.get("/donation/:email", async (req, res) => {
-    //   const email = req.params.email;
-    //   console.log(email);
-    //   console.log("req",req.user?.user);
-      
-    //   const query = { email: email }
-    //   const result = await donationCollection.find(query).toArray()
-    //   res.send(result)
-    // });
-
     app.get("/donation", async (req, res) => {
       const cursor = donationCollection.find();
       const result = await cursor.toArray();
@@ -98,7 +96,14 @@ async function run() {
       const result = await donationCollection.insertOne(newDonation);
       res.send(result);
     });
-    
+
+    // add related apis
+    // app.post("/add", async (req, res) => {
+    //   const addDonation = req.body;
+    //   console.log("creating new donation", addDonation);
+    //   const result = await newCollection.insertOne(addDonation);
+    //   res.send(result);
+    // });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
