@@ -67,6 +67,14 @@ async function run() {
       res.send(result);
     });
 
+    app.delete("/myfunds/:id", async(req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const query = {_id:new ObjectId(id)};
+      const result = await fundCollection.deleteOne(query);
+      res.send(result);
+    })
+
     // users related apis
 
     app.get("/users", async (req, res) => {
