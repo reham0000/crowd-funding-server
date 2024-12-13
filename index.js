@@ -67,6 +67,37 @@ async function run() {
       res.send(result);
     });
 
+
+
+    app.get("/myfunds/:id", async(req, res) => {
+      const id = req.params.id;
+      // console.log(id); 
+      const query = {_id:new ObjectId(id)};
+      const result = await fundCollection.findOne(query);
+      res.send(result);
+    })
+
+    app.put("/myfunds/:id", async(req, res) => {
+      const id = req.params.id;
+      const filter = {_id:new ObjectId(id)}
+      const options = {upsert: true};
+      const updatedCampaign = req.body;
+      const campaign = {
+        $set: {
+          deadline:updatedCampaign.deadline,
+          description:updatedCampaign.description, 
+          email:updatedCampaign.email, 
+          minDonation:updatedCampaign.minDonation, 
+          name:updatedCampaign.name, 
+          thumbnail: updatedCampaign.thumbnail, 
+          title:updatedCampaign.title, 
+          type: updatedCampaign.type
+        }
+      }
+      const result = await fundCollection.updateOne(filter, campaign, options);
+      res.send(result); 
+    })
+
     app.delete("/myfunds/:id", async(req, res) => {
       const id = req.params.id;
       console.log(id);
