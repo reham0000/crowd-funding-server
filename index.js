@@ -36,7 +36,7 @@ async function run() {
     // db.orders.find().sort( { amount: -1 } )
 
     app.get("/fund", async (req, res) => {
-      const cursor = fundCollection.find().limit(6).sort({ minDonation: -1 });
+      const cursor = fundCollection.find().limit(6);
       const result = await cursor.toArray();
       res.send(result);
     });
@@ -71,7 +71,6 @@ async function run() {
 
     app.get("/myfunds/:id", async(req, res) => {
       const id = req.params.id;
-      // console.log(id); 
       const query = {_id:new ObjectId(id)};
       const result = await fundCollection.findOne(query);
       res.send(result);
@@ -100,7 +99,6 @@ async function run() {
 
     app.delete("/myfunds/:id", async(req, res) => {
       const id = req.params.id;
-      console.log(id);
       const query = {_id:new ObjectId(id)};
       const result = await fundCollection.deleteOne(query);
       res.send(result);
@@ -136,13 +134,7 @@ async function run() {
       res.send(result);
     });
 
-    // add related apis
-    // app.post("/add", async (req, res) => {
-    //   const addDonation = req.body;
-    //   console.log("creating new donation", addDonation);
-    //   const result = await newCollection.insertOne(addDonation);
-    //   res.send(result);
-    // });
+    
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
