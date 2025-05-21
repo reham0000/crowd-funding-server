@@ -69,7 +69,7 @@ async function run() {
 
     app.post("/fund", async (req, res) => {
       const newFund = req.body;
-      console.log(newFund);
+      // console.log(newFund);
       const result = await fundCollection.insertOne(newFund);
       res.send(result);
     });
@@ -119,7 +119,7 @@ async function run() {
 
     app.post("/users", async (req, res) => {
       const newUser = req.body;
-      console.log("creating new user", newUser);
+      // console.log("creating new user", newUser);
       const result = await userCollection.insertOne(newUser);
       res.send(result);
     });
@@ -134,7 +134,7 @@ async function run() {
 
     app.post("/donation", async (req, res) => {
       const newDonation = req.body;
-      console.log("creating new donation", newDonation);
+      // console.log("creating new donation", newDonation);
       const result = await donationCollection.insertOne(newDonation);
       res.send(result);
     });
@@ -143,7 +143,7 @@ async function run() {
     app.post("/create-payment-intent", async (req, res) => {
       const { price } = req.body;
       const amount = parseInt(price * 100);
-      console.log(amount, "amount inside  the intent");
+      // console.log(amount, "amount inside  the intent");
       const paymentIntent = await stripe.paymentIntents.create({
         amount: amount,
         currency: "usd",
@@ -196,7 +196,7 @@ async function run() {
         ship_country: "Bangladesh",
       };
 
-      console.log(data);
+      // console.log(data);
 
       const sslcz = new SSLCommerzPayment(store_id, store_passwd, is_live);
       sslcz.init(data).then((apiResponse) => {
@@ -211,11 +211,11 @@ async function run() {
         };
         const result = moneyCollection.insertOne(finalDonation);
 
-        console.log("Redirecting to: ", GatewayPageURL);
+        // console.log("Redirecting to: ", GatewayPageURL);
       });
 
       app.post("/payment/success/:tranId", async (req, res) => {
-        console.log(req.params.tranId);
+        // console.log(req.params.tranId);
         const result = await moneyCollection.updateOne(
           { transactionId: req.params.tranId },
           {
@@ -227,7 +227,7 @@ async function run() {
 
         if (result.modifiedCount > 0) {
           res.redirect(
-            `http://localhost:5173/payment/success/${req.params.tranId}`
+            `https://crowd-funding-936c0.web.app/payment/success/${req.params.tranId}`
           );
         }
       });
@@ -239,7 +239,7 @@ async function run() {
 
         if (result.deletedCount) {
           res.redirect(
-            `http://localhost:5173/payment/fail/${req.params.tranId}`
+            `https://crowd-funding-936c0.web.app/payment/fail/${req.params.tranId}`
           );
         }
       });
