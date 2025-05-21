@@ -12,6 +12,7 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 
 app.use(express.json());
+app.use(express.urlencoded());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.w4irz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
@@ -141,20 +142,20 @@ async function run() {
     });
 
     //payment intent
-    app.post("/create-payment-intent", async (req, res) => {
-      const { price } = req.body;
-      const amount = parseInt(price * 100);
-      // console.log(amount, "amount inside  the intent");
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount: amount,
-        currency: "usd",
-        payment_method_types: ["card "],
-      });
+    // app.post("/create-payment-intent", async (req, res) => {
+    //   const { price } = req.body;
+    //   const amount = parseInt(price * 100);
+    //   // console.log(amount, "amount inside  the intent");
+    //   const paymentIntent = await stripe.paymentIntents.create({
+    //     amount: amount,
+    //     currency: "usd",
+    //     payment_method_types: ["card "],
+    //   });
 
-      res.send({
-        clientSecret: paymentIntent.client_secret,
-      });
-    });
+    //   res.send({
+    //     clientSecret: paymentIntent.client_secret,
+    //   });
+    // });
 
     //sslCommerz
 
@@ -170,8 +171,8 @@ async function run() {
         total_amount: order?.minDonation,
         currency: "BDT",
         tran_id: tran_id, // use unique tran_id for each api call
-        success_url: `http://localhost:5000/payment/success/${tran_id}`,
-        fail_url: `http://localhost:5000/payment/fail/${tran_id}`,
+        success_url: `https://crowd-funding-server-kx73.vercel.app/payment/success/${tran_id}`,
+        fail_url: `https://crowd-funding-server-kx73.vercel.app/payment/fail/${tran_id}`,
         cancel_url: "http://localhost:3030/cancel",
         ipn_url: "http://localhost:3030/ipn",
         shipping_method: "Courier",
@@ -228,7 +229,7 @@ async function run() {
 
         if (result.modifiedCount > 0) {
           res.redirect(
-            `http://localhost:5173/payment/success/${req.params.tranId}`
+            `https://crowd-funding-936c0.web.app/payment/success/${req.params.tranId}`
           );
         }
       });
@@ -240,7 +241,7 @@ async function run() {
 
         if (result.deletedCount) {
           res.redirect(
-            `http://localhost:5173/payment/fail/${req.params.tranId}`
+            `https://crowd-funding-936c0.web.app/payment/fail/${req.params.tranId}`
           );
         }
       });
